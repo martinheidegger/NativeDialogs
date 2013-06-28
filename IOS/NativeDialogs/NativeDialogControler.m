@@ -99,7 +99,11 @@
         }
     }
     FREDispatchStatusEventAsync(freContext, (uint8_t*)"nativeDialog_opened", (uint8_t*)"-1");
-    [alert show];
+    
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [alert show];
+    });
 }
 
 
@@ -121,6 +125,7 @@
     FREGetArrayLength(buttons, &buttons_len);
     
     if(buttons_len>0){
+        
         uint32_t stingLen;
         const uint8_t *buttonLabel;
         UIBarButtonItem *barButton;
@@ -162,15 +167,14 @@
                 [barButton release];
                 barButton = nil;
             }
-        }   
-        
+        }
     }else{
         UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
         UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(actionSheetButtonClicked:)];
         [doneBtn setTag:1];
         
         [barItems addObject:flexSpace];
-        [barItems addObject:doneBtn];
+        [barItems addObject:doneBtn];   
         
         [flexSpace release];
         [doneBtn release];
@@ -243,8 +247,9 @@
             CGFloat viewHeight = wind.frame.size.height;
             CGRect rect = CGRectMake(viewWidth/2, viewHeight/2, 1, 1);
             
-            [popoverController presentPopoverFromRect:rect inView:wind permittedArrowDirections:0 animated:YES];
-            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [popoverController presentPopoverFromRect:rect inView:wind permittedArrowDirections:0 animated:YES];
+            });
             popover = popoverController;
             
             //[popoverController release];
@@ -273,9 +278,11 @@
                 FREDispatchStatusEventAsync(freContext, (const uint8_t*)"error", (const uint8_t*)"Window is nil");
                 return;
             }
-            [aac showInView:wind];
             
-            [aac setBounds:CGRectMake(0,0,320, 464)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [aac showInView:wind];
+                [aac setBounds:CGRectMake(0,0,320, 464)];
+            });
             
             
             actionSheet = aac;
@@ -421,8 +428,11 @@
     }
     [alert setDelegate:self];
     FREDispatchStatusEventAsync(freContext, (uint8_t*)"nativeDialog_opened", (uint8_t*)"-1");
-    [alert show];
     
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [alert show];
+    });
 }
 
 
@@ -674,7 +684,10 @@ UITextAutocorrectionType getAutocapitalizationTypeFormChar(const char* type){
     }
     FREDispatchStatusEventAsync(freContext, (uint8_t*)"nativeDialog_opened", (uint8_t*)"-1");
     
-    [alert show];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [alert show];
+    });
 }
 
 -(void)selectionChanged:(id)sender
@@ -723,9 +736,10 @@ UITextAutocorrectionType getAutocapitalizationTypeFormChar(const char* type){
             FREDispatchStatusEventAsync(freContext, (const uint8_t*)"error", (const uint8_t*)"Window is nil");
             return;
         }
-        [aac showInView:wind];
-        
-        [aac setBounds:CGRectMake(0,0,320, 464)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [aac showInView:wind];
+            [aac setBounds:CGRectMake(0,0,320, 464)];
+        });
         
         actionSheet = aac;
     
@@ -829,7 +843,9 @@ UITextAutocorrectionType getAutocapitalizationTypeFormChar(const char* type){
                     [sbAlert setStyle:SBTableAlertStyleApple];
                     [sbAlert setDataSource:self];
                     [sbAlert setDelegate:self];
-                    [sbAlert show];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [sbAlert show];
+                    });
                     
                     FREDispatchStatusEventAsync(freContext, (uint8_t*)"nativeDialog_opened", (uint8_t*)"-1");
                     
@@ -870,7 +886,10 @@ UITextAutocorrectionType getAutocapitalizationTypeFormChar(const char* type){
     [sbAlert setDataSource:self];
     [sbAlert setDelegate:self];
     
-    [sbAlert show];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [sbAlert show];
+    });
     
     FREDispatchStatusEventAsync(freContext, (uint8_t*)"nativeDialog_opened", (uint8_t*)"-1");
 
