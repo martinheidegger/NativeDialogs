@@ -521,6 +521,7 @@ package pl.mateuszmackowiak.nativeANE.dialogs
 		*/
 		private function onStatus( event : StatusEvent ) : void
 		{
+			trace("Native Date Picker Dialog: ", event.code, event.level);
 			event.stopImmediatePropagation();
 			
 			if(event.code==NativeDialogEvent.OPENED){
@@ -536,7 +537,6 @@ package pl.mateuszmackowiak.nativeANE.dialogs
 			{
 				if(isAndroid()){
 					var a:Array = event.level.split(",");
-					trace("reading date", a[1],a[2],a[3]);
 					if(a[0]=="day"){
 						_date = stringDateToDate(a[1],a[2],a[3],_date);
 					}else{

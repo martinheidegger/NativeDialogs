@@ -20,6 +20,7 @@ public class NativeDialogsExtension implements FREExtension
 	
 	public static final String CLOSED ="nativeDialog_closed";
 	public static final String OPENED ="nativeDialog_opened";
+	public static final String LOG ="log";
 	public static final String CANCELED ="nativeDialog_canceled";
 	
 	public static final String LIST_CHANGE = "nativeListDialog_change";
@@ -27,7 +28,7 @@ public class NativeDialogsExtension implements FREExtension
 	public static final String DATE_CHANGED = "change";
 	
 	
-	private static String TAG = "[NativeDialogs]";
+	private static String TAG = "pl.mateuszmackowiak.nativeANE.NativeDialogs";
 
 	public static FREContext context;
 	
@@ -36,8 +37,8 @@ public class NativeDialogsExtension implements FREExtension
 	 */
 	public FREContext createContext(String extId)
 	{
-		Log.d(TAG, "Extension.createContext extId: " + extId);
 		System.setProperty("log.tag."+DatePickerDialogContext.KEY, "VERBOSE");
+		Log.d(TAG, "Extension.createContext extId: " + extId);
 
 		if(ProgressDialogContext.KEY.equals(extId))
 			return context = new ProgressDialogContext();

@@ -284,20 +284,23 @@ public class DatePickerDialogContext extends FREContext {
         		dialog.setMessage(Html.fromHtml(message));
 			
 			if(buttons!=null && buttons.length>0){
-				dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, buttons[0], new ConfitmListener(0));
+				dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, buttons[0], new ConfitmListener(context, 0));
 				if(buttons.length>1){
-					dialog.setButton(DatePickerDialog.BUTTON_NEUTRAL, buttons[1], new ConfitmListener(1));
+					dialog.setButton(DatePickerDialog.BUTTON_NEUTRAL, buttons[1], new ConfitmListener(context, 1));
 				}
 				if(buttons.length>2){
-					dialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, buttons[2], new ConfitmListener(2));
+					dialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, buttons[2], new ConfitmListener(context, 2));
 				}
 			}else
-				dialog.setButton(DatePickerDialog.BUTTON_POSITIVE,"OK", new ConfitmListener(0));
+				dialog.setButton(DatePickerDialog.BUTTON_POSITIVE,"OK", new ConfitmListener(context, 0));
 			
 			
 			dialog.setCancelable(cancelable);
-			if(cancelable==true)
-				dialog.setOnCancelListener(new CancelListener());
+			if(cancelable==true) {
+	        	context.dispatchStatusEventAsync(NativeDialogsExtension.LOG,"addCancelListener");
+				dialog.setOnCancelListener(new CancelListener(context));
+			}
+			dialog.setOnDismissListener(new DismissListener(context));
 			
 			return dialog;
 	    }catch(Exception e){
@@ -382,27 +385,60 @@ public class DatePickerDialogContext extends FREContext {
 		}
 	}
 	
+	private static class DismissListener implements DialogInterface.OnDismissListener{
+		private FREContext context;
+		
+		DismissListener(FREContext context)
+		{
+			this.context = context;
+		}
+		
+		@Override
+		public void onDismiss(DialogInterface dialog)
+		{
+			try
+			{
+	        	this.context.dispatchStatusEventAsync(NativeDialogsExtension.LOG,"Dismissed");
+	        	context.dispatchStatusEventAsync(NativeDialogsExtension.CLOSED,String.valueOf(-1));
+			}
+			catch(IllegalArgumentException e)
+			{
+				Log.d(show.KEY, "Error during dismiss (context already disposed?)");
+			}
+		}
+		
+	}
+	
 	private static class CancelListener implements DialogInterface.OnCancelListener{
+    	private FREContext context;
+    	
+    	CancelListener(FREContext context)
+    	{
+    		this.context = context;
+    	}
         @Override
 		public void onCancel(DialogInterface dialog) 
         {
-        	Log.e(KEY,"onCancle");
-        	NativeDialogsExtension.context.dispatchStatusEventAsync(NativeDialogsExtension.CANCELED,String.valueOf(-1));   
-     	   dialog.dismiss();
+        	this.context.dispatchStatusEventAsync(NativeDialogsExtension.LOG,"Clicked cancel!");
+        	context.dispatchStatusEventAsync(NativeDialogsExtension.CANCELED,String.valueOf(-1));
+        	dialog.dismiss();
         }
     }
 	
 	private static class ConfitmListener implements DialogInterface.OnClickListener{
     	private int index;
-    	ConfitmListener(int index)
+    	private FREContext context;
+    	ConfitmListener(FREContext context, int index)
     	{
     		this.index = index;
+    		this.context = context;
     	}
  
         @Override
 		public void onClick(DialogInterface dialog,int id) 
         {
-        	NativeDialogsExtension.context.dispatchStatusEventAsync(NativeDialogsExtension.CLOSED,String.valueOf(index));//Math.abs(id-1)));
+        	this.context.dispatchStatusEventAsync(NativeDialogsExtension.LOG,"Clicked confirm!");
+        	this.context.dispatchStatusEventAsync(NativeDialogsExtension.CLOSED,String.valueOf(index));//Math.abs(id-1)));
         	dialog.dismiss();
         }
     }

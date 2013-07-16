@@ -1,4 +1,4 @@
-<project name="ANE" basedir="." default="compile">
+<project name="ANE" basedir="." default="copyGenerated">
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 	  <classpath path=".ant-contrib.jar"/>
 	</taskdef>
@@ -51,6 +51,7 @@
 
 	<!-- Export Android lib -->
 	<target name="androidExport" if="${ANDROID_ENABLE}" depends="androidClean">
+		<!--<javac srcdir="${ANDROID_SRC_FOLDER};${ANDROID_GEN_FOLDER}" destdir="${ANDROID_BIN_FOLDER}/classes" includeantruntime="false" classpath="${ANDROID_SDK_PATH}/platforms/android-16/android.jar" bootclasspath="${AIR_SDK_PATH}/lib/android/FlashRuntimeExtensions.jar" target="1.6"/>-->
 		<jar basedir="${ANDROID_BIN_FOLDER}/classes" destfile="${ANDROID_LIB_PATH}"/>
 	</target>
 
@@ -86,6 +87,11 @@
 						</if>-->
 	<!-- Compile ANE -->
 	<target name="compile" depends="deleteTemp">
+		<echo>Android enabled: ${ANDROID_ENABLE}</echo>
+		<echo>IOS ARM enabled: ${IOS_ARM_ENABLE}</echo>
+		<echo>IOS X86 enabled: ${IOS_X86_ENABLE}</echo>
+		<echo>IOS platform options: ${IOS_PLATFORM_OPTIONS}</echo>
+		<echo>${EXTENSION.XML}</echo>
 		<if>
 			<equals arg1="${ANDROID_ENABLE}" arg2="true"/>
 			<then>
@@ -95,8 +101,9 @@
 						<if>
 							<equals arg1="${IOS_X86_ENABLE}" arg2="true"/>
 							<then>
-								<java jar="${ADT.JAR}" fork="true" failonerror="true">
+								<java jar="${ADT.JAR}" fork="true" failonerror="true" output="debug.log">
 									<arg value="-package"/>
+
 									<arg value="-target"/>
 									<arg value="ane"/>
 									<arg value="${ANE_PATH}"/>
@@ -265,7 +272,9 @@
 		</if>
 	</target>
 	
-	
+	<target name="copyGenerated" depends="compile">
+		<copy file="${BINARIES_FOLDER}/NativeDialogs.ane" overwrite="true" todir="/Users/heideggermartin/IdeaProjects/REMO/mobile_app/common/ane"/>
+	</target>
 	
 	
 		

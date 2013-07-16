@@ -82,13 +82,13 @@ package pl.mateuszmackowiak.nativeANE.dialogs
 		/**@private*/
 		private var _progress:int=0;
 		/**@private*/
-		private var _secondary:int=NaN;
+		private var _secondary:int= NaN as int;
 		/**@private*/
 		private var _style:uint = STYLE_SPINNER;
 		/**@private*/
-		private var _androidTheme:int = NaN;
+		private var _androidTheme:int = NaN as int;
 		/**@private*/
-		private var _iosTheme:int = NaN;
+		private var _iosTheme:int = NaN as int;
 		/**@private*/
 		private var _maxProgress:int  = 100;
 		/**@private*/
